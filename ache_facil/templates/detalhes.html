@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes do Objeto - {{ objeto.nome }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container-principal">
+        <main class="conteudo-principal">
+
+            {% include 'sidebar.html' with form_cadastro=form_cadastro status_atual=status_atual %}
+
+            <section class="detalhes-item">
+                
+                <h1>{{ objeto.nome }}</h1>
+
+                <div class="layout-detalhes">
+                    
+                    <div class="painel-imagem-info">
+                        {% if objeto.imagem %}
+                            <img src="{{ objeto.imagem.url }}" alt="Imagem de {{ objeto.nome }}" class="imagem-detalhes" />
+                        {% else %}
+                            <div class="placeholder-imagem-detalhes"></div> 
+                        {% endif %}
+                        <p class="nome-objeto-detalhes">{{ objeto.nome }}</p>
+                    </div>
+
+                    <div class="painel-acoes">
+                        
+                        <form method="POST" action="{% url 'detalhes_objeto' pk=objeto.pk %}" class="form-edicao">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="salvar_edicao">
+                            
+                            <div class="info-status">
+                                
+                                <label for="{{ form_edicao.nome.id_for_label }}">Nome do Objeto</label>
+                                {{ form_edicao.nome }}
+                                
+                                <label for="{{ form_edicao.local_encontrado.id_for_label }}">Local encontrado</label>
+                                {{ form_edicao.local_encontrado }}
+
+                                <label>Data e Hora do Cadastro</label>
+                                <input type="text" value="{{ objeto.data_cadastro|date:'d/m/Y H:i' }}" readonly class="data-readonly">
+
+                                <div class="status-display-box status-{{ objeto.status|lower }}">
+                                    <strong>Status:</strong> {{ objeto.get_status_display }}
+                                </div>
+                                
+                                <button type="submit" class="btn-salvar-edicao">
+                                    SALVAR EDIÇÃO
+                                </button>
+                            </div>
+                        </form>
+                        
+                        
+                        <div class="acoes-gerenciais">
+                            
+                            {% if objeto.status == 'PERDIDO' %}
+                            <form method="POST" action="{% url 'detalhes_objeto' pk=objeto.pk %}" class="form-acao">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="marcar_achado">
+                                <button type="submit" class="btn-marcar-achado">
+                                    MARCAR COMO ACHADO
+                                </button>
+                            </form>
+                            
+                            {% else %} <form method="POST" action="{% url 'detalhes_objeto' pk=objeto.pk %}" class="form-acao">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="marcar_perdido">
+                                <button type="submit" class="btn-voltar-perdidos">
+                                    VOLTAR OBJETO PARA STATUS DE PERDIDO
+                                </button>
+                            </form>
+                            
+                            {% endif %}
+                            
+
+                            <form method="POST" action="{% url 'detalhes_objeto' pk=objeto.pk %}" class="form-acao form-excluir">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="excluir">
+                                <button type="submit" class="btn-excluir">
+                                    EXCLUIR
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

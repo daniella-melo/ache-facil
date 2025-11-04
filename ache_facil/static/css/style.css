@@ -1,0 +1,472 @@
+/* Definições Globais e Reset */
+:root {
+    --cor-primaria: #000; /* Preto para botões e texto principal */
+    --cor-secundaria: #fff; /* Branco para fundo */
+    --cor-texto-claro: #333; /* Cinza escuro para links/texto */
+    --cor-borda: #ccc; /* Cinza claro para bordas e linhas */
+    --cor-botao-claro: #eee; /* Cinza muito claro para botões inativos */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-texto-claro);
+    line-height: 1.6;
+}
+
+/* ============================================== */
+/* LAYOUT PRINCIPAL               */
+/* ============================================== */
+
+.container-principal {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.conteudo-principal {
+    display: flex;
+    gap: 30px; /* Espaço entre as colunas */
+}
+
+/* Coluna Esquerda (Aside - Opções e Cadastro) */
+.coluna-esquerda {
+    width: 300px; /* Largura fixa para a coluna de opções */
+    border-right: 1px solid var(--cor-borda);
+    padding-right: 30px;
+    flex-shrink: 0; /* Impede que a coluna encolha */
+}
+
+/* Coluna Direita (Section - Inventário) */
+.inventario-itens {
+    flex-grow: 1; /* Ocupa o espaço restante */
+}
+
+/* ============================================== */
+/* BARRA SUPERIOR (Busca e Filtros)*/
+/* ============================================== */
+
+.form-busca {
+    display: flex;
+    border: 1px solid var(--cor-borda);
+    border-radius: 4px;
+    width: 400px; /* Largura da barra de pesquisa */
+}
+
+.input-busca {
+    border: none;
+    padding: 10px 15px;
+    flex-grow: 1;
+    font-size: 16px;
+    outline: none;
+}
+
+.btn-busca {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.opcoes-ordenacao a {
+    text-decoration: none;
+    padding: 8px 15px;
+    border: 1px solid var(--cor-borda);
+    color: var(--cor-texto-claro);
+    transition: background-color 0.2s;
+    font-size: 14px;
+}
+
+.opcoes-ordenacao a:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.opcoes-ordenacao a:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-left: -1px; /* Para as bordas se tocarem */
+}
+
+.opcoes-ordenacao a.active {
+    background-color: var(--cor-primaria);
+    color: var(--cor-secundaria);
+    border-color: var(--cor-primaria);
+}
+
+/* Título de Resultados */
+.inventario-itens h2 {
+    font-weight: normal;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* ============================================== */
+/* COLUNA ESQUERDA                  */
+/* ============================================== */
+
+.opcoes-navegacao h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.opcoes-navegacao ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.opcoes-navegacao li {
+    padding: 5px 0;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.opcoes-navegacao a.link-filtro {
+    text-decoration: none;
+    color: var(--cor-texto-claro);
+    display: block;
+    padding: 2px 0;
+    transition: color 0.2s;
+}
+
+.opcoes-navegacao a.link-filtro:hover {
+    color: var(--cor-primaria);
+}
+
+.opcoes-navegacao a.link-filtro.active {
+    font-weight: bold;
+    color: var(--cor-primaria); /* Cor mais escura para o ativo */
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--cor-borda);
+    margin: 20px 0;
+}
+
+/* Formulário de Cadastro */
+.cadastro-objeto h3 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.cadastro-objeto label {
+    font-size: 14px; 
+    font-weight: normal;
+    margin-top: 15px;
+    margin-bottom: 5px; 
+}
+
+.cadastro-objeto input[type="text"],
+.cadastro-objeto select,
+.cadastro-local input[type="text"] {
+    width: 100%; /* Força largura total para todos */
+    padding: 10px 12px; /* Aumenta o padding para melhor toque/visual */
+    border: 1px solid var(--cor-borda);
+    border-radius: 4px; /* Cantos arredondados */
+    margin-top: 5px;
+    margin-bottom: 15px; /* Adiciona espaço abaixo de cada campo */
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.cadastro-objeto input[type="text"]:focus,
+.cadastro-objeto select:focus,
+.cadastro-local input[type="text"]:focus {
+    border-color: var(--cor-primaria);
+}
+
+.cadastro-objeto select {
+    -webkit-appearance: none; 
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="%23000" d="M9.293 12.95l.707.707 4-4-1.414-1.414L10 11.586 6.707 8.293 5.293 9.707z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.7em center;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5em; 
+}
+
+/* Estilo para o campo 'Upload Imagem' */
+.upload-imagem-box {
+    margin-top: 15px;
+    font-size: 14px;
+    color: var(--cor-texto-claro);
+    /* Esconder o input file padrão e estilizar o rótulo/div */
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.upload-imagem-box input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.btn-cadastrar {
+    width: 100%;
+    background-color: var(--cor-primaria);
+    color: var(--cor-secundaria);
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px; 
+    margin-bottom: 0; 
+    transition: background-color 0.2s;
+}
+
+/* .cadastro-objeto .btn-cadastrar {
+    margin-top: 25px; 
+} */
+
+.cadastro-objeto, .cadastro-local {
+    margin-bottom: 20px;
+}
+
+/* Ajusta o padding do formulário de local */
+.cadastro-local h3 {
+    margin-bottom: 10px; 
+    font-size: 14px;
+    font-weight: bold;
+}
+/* ============================================== */
+/* CARDS DE OBJETOS               */
+/* ============================================== */
+
+.grid-objetos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas por linha */
+    gap: 20px;
+}
+
+.card-objeto {
+    border: 1px solid var(--cor-borda);
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.placeholder-image, .imagem-objeto {
+    width: 100%;
+    /* Mantém a proporção dos cards 1:1, como no protótipo */
+    padding-top: 100%; 
+    background-color: var(--cor-borda);
+    margin-bottom: 10px;
+    position: relative;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23999"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 14h16V6H4v12zm10.5-8.5l2.5 3.5 3-4 4 6H4l6-8 3.5 4.5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40px;
+}
+
+.imagem-objeto {
+    /* Se a imagem real for carregada, a url é definida pelo Django e o background some */
+    background: none; 
+    padding: 0; 
+    height: auto; 
+    display: block; 
+}
+
+.nome-objeto, .text-info {
+    font-size: 14px;
+    text-align: left;
+    color: var(--cor-primaria);
+}
+
+/* Estilos de Detalhes do Item */
+.detalhes-item h1 {
+    font-size: 28px;
+    font-weight: normal;
+    margin-bottom: 30px;
+}
+
+.layout-detalhes {
+    display: flex;
+    gap: 40px;
+}
+
+.painel-imagem-info {
+    width: 350px;
+    flex-shrink: 0;
+}
+
+.imagem-detalhes, .placeholder-imagem-detalhes {
+    width: 100%;
+    height: 350px;
+    background-color: var(--cor-borda);
+    margin-bottom: 10px;
+    /* Ajuste o placeholder conforme necessário */
+}
+
+.placeholder-imagem-detalhes {
+    /* Reutiliza o estilo do placeholder do card, mas com tamanho maior */
+    padding-top: 0; 
+    background-size: 80px;
+}
+
+.nome-objeto-detalhes {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.painel-acoes {
+    flex-grow: 1;
+}
+
+.info-status label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 15px;
+    color: var(--cor-texto-claro);
+}
+
+.info-status input[type="text"] {
+    width: 300px;
+    padding: 8px 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 4px;
+    margin-top: 5px;
+    background-color: var(--cor-secundaria);
+    font-size: 14px;
+}
+
+.status-atual-label {
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.acoes-gerenciais {
+    margin-top: 50px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap; 
+}
+
+.btn-marcar-achado {
+    background-color: #ff9800; 
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.btn-excluir {
+    background-color: #cc0000; 
+    color: var(--cor-secundaria);
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.form-edicao input[type="text"] {
+    width: 300px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+    margin-bottom: 15px; 
+    background-color: white;
+    font-size: 14px;
+}
+
+.form-edicao label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 15px;
+    color: #555;
+}
+
+.data-readonly {
+    background-color: #f0f0f0 !important; 
+    color: #666;
+}
+
+.btn-salvar-edicao {
+    background-color: #4CAF50; 
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: block; 
+    width: 300px;
+}
+
+.status-display-box {
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    font-size: 15px;
+    border: 1px solid;
+    width: 300px;
+    text-align: center;
+}
+
+.status-perdido {
+    background-color: #ffe0b2; 
+    color: #e65100; 
+    border-color: #ffb74d;
+}
+
+.status-achado {
+    background-color: #c8e6c9; 
+    color: #388e3c; 
+    border-color: #a5d6a7;
+}
+
+.btn-voltar-perdidos {
+    background-color: #03a9f4; 
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+}

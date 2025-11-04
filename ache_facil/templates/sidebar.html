@@ -1,0 +1,62 @@
+<aside class="coluna-esquerda">
+    
+    <div class="opcoes-navegacao">
+        <h2>Opções</h2>
+        <ul>
+            <li>
+                <a href="{% url 'home' %}?status_filter=PERDIDO{% if query_atual %}&q={{ query_atual }}{% endif %}{% if ordenacao_atual %}&ordem={{ ordenacao_atual }}{% endif %}"
+                   class="link-filtro {% if status_atual == 'PERDIDO' %}active{% endif %}">
+                    > Ver Objetos Perdidos
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'home' %}?status_filter=ACHADO{% if query_atual %}&q={{ query_atual }}{% endif %}{% if ordenacao_atual %}&ordem={{ ordenacao_atual }}{% endif %}"
+                   class="link-filtro {% if status_atual == 'ACHADO' or status_atual == None %}active{% endif %}">
+                    > Ver Objetos Achados
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <div class="cadastro-objeto">
+        <h3>Achou mais um objeto? Cadastre Aqui</h3>
+        
+        <form method="POST" enctype="multipart/form-data" action="{% url 'home' %}">
+            {% csrf_token %}
+            
+            <label for="{{ form_cadastro.nome.id_for_label }}">Nome</label>
+            {{ form_cadastro.nome }}
+            
+            <label for="{{ form_cadastro.local_encontrado.id_for_label }}">Local encontrado</label>
+            {{ form_cadastro.local_encontrado }}
+
+            <div class="upload-imagem-box">
+                 <i class="fas fa-upload"></i> Upload Imagem
+                {{ form_cadastro.imagem }}
+            </div>
+            
+            {% if form_cadastro.errors %}
+                <div class="erros-form">
+                    </div>
+            {% endif %}
+
+            <button type="submit" class="btn-cadastrar" name="cadastrar_objeto">Cadastrar</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <div class="cadastro-local">
+    <h3>Cadastrar Novo Local</h3>
+    <form method="POST" action="{% url 'home' %}">
+        {% csrf_token %}
+        {{ form_local.nome }} 
+        <button type="submit" name="cadastrar_local" class="btn-cadastrar">
+            Cadastrar Local
+        </button>
+    </form>
+</div>
+
+</aside>

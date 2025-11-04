@@ -1,0 +1,69 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcheFácil - Inventário Geral</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <div class="container-principal">
+        
+        <header class="barra-superior">
+            <form action="{% url 'home' %}" method="GET" class="form-busca">
+                <input type="text" 
+                       name="q" 
+                       placeholder="O que você está procurando?" 
+                       value="{{ query_atual|default:'' }}" 
+                       class="input-busca">
+                <button type="submit" class="btn-busca">
+                    🔍
+                </button>
+            </form>
+
+            <div class="opcoes-ordenacao">
+                
+                <a href="{% url 'home' %}?ordem=-data_cadastro{% if query_atual %}&q={{ query_atual }}{% endif %}" 
+                   class="btn-ordem {% if ordenacao_atual == '-data_cadastro' %}active{% endif %}">
+                    Mais Recentes
+                </a>
+                
+                <a href="{% url 'home' %}?ordem=data_cadastro{% if query_atual %}&q={{ query_atual }}{% endif %}" 
+                   class="btn-ordem {% if ordenacao_atual == 'data_cadastro' %}active{% endif %}">
+                    Mais Antigos
+                </a>
+                
+            </div>
+        </header>
+
+        <main class="conteudo-principal">
+            {% include 'sidebar.html' with form_cadastro=form_cadastro query_atual=query_atual ordenacao_atual=ordenacao_atual status_atual=status_atual %}
+
+            <section class="inventario-itens">
+                <h2>{{ objetos_encontrados|length }} OBJETOS ENCONTRADOS</h2>
+
+                <div class="grid-objetos">
+                    {% for objeto in objetos_encontrados %}
+                        <a href="{% url 'detalhes_objeto' pk=objeto.pk %}" class="card-objeto-link">
+                            <div class="card-objeto">
+                                {% if objeto.imagem %}
+                                    <img src="{{ objeto.imagem.url }}" alt="Objeto: {{ objeto.nome }}" class="imagem-objeto" />
+                                {% else %}
+                                    <div class="placeholder-image"></div> 
+                                {% endif %}
+                                
+                                <p class="nome-objeto">{{ objeto.nome }}</p>
+                            </div>
+                        </a>
+                    {% empty %}
+                        <p>Nenhum objeto encontrado com os filtros atuais.</p>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+
+    </div>
+</body>
+</html>
