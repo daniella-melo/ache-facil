@@ -38,6 +38,54 @@
             </div>
         </header>
 
+         <div id="sidebar-filtros">
+            <h3>Filtros Adicionais</h3>
+            
+            <form method="GET" action="{% url 'home' %}" id="form-filtro-local">
+                {% if status_atual %}
+                    <input type="hidden" name="status_filter" value="{{ status_atual }}">
+                {% endif %}
+                {% if query_atual %}
+                    <input type="hidden" name="q" value="{{ query_atual }}">
+                {% endif %}
+                {% if cor_atual %}
+                    <input type="hidden" name="cor_filter" value="{{ cor_atual }}">
+                {% endif %}
+                <label for="local-filter">Local Encontrado:</label>
+                <select name="local_filter" id="local-filter" onchange="document.getElementById('form-filtro-local').submit()">
+                    <option value="">-- Todos os Locais --</option>
+                    {% for local in locais_disponiveis %}
+                        <option value="{{ local.pk }}" {% if local_atual == local.pk|slugify %}selected{% endif %}>
+                            {{ local.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+            
+            <form method="GET" action="{% url 'home' %}" id="form-filtro-cor">
+                {% if status_atual %}
+                    <input type="hidden" name="status_filter" value="{{ status_atual }}">
+                {% endif %}
+                {% if query_atual %}
+                    <input type="hidden" name="q" value="{{ query_atual }}">
+                {% endif %}
+                {% if local_atual %}
+                    <input type="hidden" name="local_filter" value="{{ local_atual }}">
+                {% endif %}
+                <label for="cor-filter">Cor:</label>
+                <select name="cor_filter" id="cor-filter" onchange="document.getElementById('form-filtro-cor').submit()">
+                    <option value="">-- Todas as Cores --</option>
+                    {% for cor in cores_disponiveis %}
+                        <option value="{{ cor.pk }}" {% if cor_atual == cor.pk|slugify %}selected{% endif %}>
+                            {{ cor.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <hr>
+
         <main class="conteudo-principal">
             {% include 'sidebar.html' with form_cadastro=form_cadastro query_atual=query_atual ordenacao_atual=ordenacao_atual status_atual=status_atual %}
 

@@ -4,7 +4,7 @@
     --cor-secundaria: #fff; /* Branco para fundo */
     --cor-texto-claro: #333; /* Cinza escuro para links/texto */
     --cor-borda: #ccc; /* Cinza claro para bordas e linhas */
-    --cor-botao-claro: #eee; /* Cinza muito claro para botões inativos */
+    --cor-botao-claro: #f5f5f5; /* Cinza muito claro para fundos de cartões (cartão de cadastro) */
 }
 
 * {
@@ -36,6 +36,7 @@ body {
     align-items: center;
     padding: 10px 0;
     margin-bottom: 20px;
+    gap: 20px;
 }
 
 .conteudo-principal {
@@ -64,7 +65,7 @@ body {
     display: flex;
     border: 1px solid var(--cor-borda);
     border-radius: 4px;
-    width: 400px; /* Largura da barra de pesquisa */
+    width: 400px; 
 }
 
 .input-busca {
@@ -100,7 +101,7 @@ body {
 .opcoes-ordenacao a:last-child {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
-    margin-left: -1px; /* Para as bordas se tocarem */
+    margin-left: -1px; 
 }
 
 .opcoes-ordenacao a.active {
@@ -109,16 +110,59 @@ body {
     border-color: var(--cor-primaria);
 }
 
-/* Título de Resultados */
 .inventario-itens h2 {
     font-weight: normal;
     font-size: 16px;
     margin-bottom: 20px;
 }
+#sidebar-filtros {
+    flex-shrink: 0;
+    display: flex; /* CRÍTICO: Mantém a linha horizontal */
+    align-items: center;
+    gap: 15px; 
+    font-size: 14px;
+}
+
+/* Garante que cada filtro (Local e Cor) seja uma sub-estrutura horizontal */
+#sidebar-filtros form {
+    display: flex;
+    align-items: center;
+    gap: 5px; 
+}
+
+/* Estilo para os labels */
+#sidebar-filtros label {
+    font-weight: normal; /* Mantém menos chamativo que os títulos principais */
+    color: var(--cor-texto-claro);
+    flex-shrink: 0;
+}
+
+/* Força o estilo do SELECT (dropdown) dentro do bloco de filtros */
+#sidebar-filtros select {
+    padding: 7px 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 4px;
+    font-size: 14px;
+    
+    /* Reaplicação do estilo de dropdown customizado */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--cor-secundaria);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="%23000" d="M9.293 12.95l.707.707 4-4-1.414-1.414L10 11.586 6.707 8.293 5.293 9.707z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.5em center;
+    background-size: 1.2em 1.2em;
+    padding-right: 2em;
+    cursor: pointer;
+    min-width: 130px; /* Garante que o dropdown não fique muito estreito */
+}
 
 /* ============================================== */
-/* COLUNA ESQUERDA                  */
+/* COLUNA ESQUERDA - SIDEBAR                  */
 /* ============================================== */
+
+/* --- Navegação --- */
 
 .opcoes-navegacao h2 {
     font-size: 16px;
@@ -150,7 +194,7 @@ body {
 
 .opcoes-navegacao a.link-filtro.active {
     font-weight: bold;
-    color: var(--cor-primaria); /* Cor mais escura para o ativo */
+    color: var(--cor-primaria);
 }
 
 hr {
@@ -159,29 +203,53 @@ hr {
     margin: 20px 0;
 }
 
-/* Formulário de Cadastro */
-.cadastro-objeto h3 {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 15px;
+/* --- ESTILIZAÇÃO DOS CARTÕES DE CADASTRO (UNIFICADO) --- */
+
+/* Esta classe define o retângulo com fundo cinza e borda arredondada */
+.cartao-sidebar { 
+    padding: 20px; 
+    background-color: var(--cor-botao-claro); 
+    border: 1px solid var(--cor-borda); 
+    border-radius: 10px; 
+    margin-bottom: 20px;
 }
 
+/* --- Títulos dos Formulários --- */
+
+.cadastro-objeto h3,
+.cadastro-local h3,
+.cadastro-cor h3 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+
+/* --- Estilos de Labels (Rótulos) --- */
+
 .cadastro-objeto label {
+    display: block;
     font-size: 14px; 
     font-weight: normal;
+    color: var(--cor-texto-claro);
     margin-top: 15px;
     margin-bottom: 5px; 
 }
 
+
+/* --- Estilos de Input/Select (UNIFICADO) --- */
+
+/* Estiliza todos os inputs e selects dentro dos formulários de cadastro */
 .cadastro-objeto input[type="text"],
 .cadastro-objeto select,
-.cadastro-local input[type="text"] {
-    width: 100%; /* Força largura total para todos */
-    padding: 10px 12px; /* Aumenta o padding para melhor toque/visual */
+.cadastro-local input[type="text"],
+.cadastro-cor input[type="text"] {
+    width: 100%; 
+    padding: 10px 12px; 
     border: 1px solid var(--cor-borda);
-    border-radius: 4px; /* Cantos arredondados */
+    border-radius: 4px; 
     margin-top: 5px;
-    margin-bottom: 15px; /* Adiciona espaço abaixo de cada campo */
+    margin-bottom: 15px; /* Espaço abaixo do campo */
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s;
@@ -189,11 +257,14 @@ hr {
 
 .cadastro-objeto input[type="text"]:focus,
 .cadastro-objeto select:focus,
-.cadastro-local input[type="text"]:focus {
+.cadastro-local input[type="text"]:focus,
+.cadastro-cor input[type="text"]:focus {
     border-color: var(--cor-primaria);
 }
 
+/* --- Estilo Específico para o Dropdown Select --- */
 .cadastro-objeto select {
+    /* Remove aparência nativa e adiciona seta customizada */
     -webkit-appearance: none; 
     -moz-appearance: none;
     appearance: none;
@@ -204,12 +275,13 @@ hr {
     padding-right: 2.5em; 
 }
 
-/* Estilo para o campo 'Upload Imagem' */
+
+/* --- Estilo para o campo 'Upload Imagem' --- */
+
 .upload-imagem-box {
     margin-top: 15px;
     font-size: 14px;
     color: var(--cor-texto-claro);
-    /* Esconder o input file padrão e estilizar o rótulo/div */
     position: relative;
     cursor: pointer;
     overflow: hidden;
@@ -231,6 +303,8 @@ hr {
     display: block;
 }
 
+/* --- Estilo de Botões (Cadastro) --- */
+
 .btn-cadastrar {
     width: 100%;
     background-color: var(--cor-primaria);
@@ -246,27 +320,18 @@ hr {
     transition: background-color 0.2s;
 }
 
-/* .cadastro-objeto .btn-cadastrar {
-    margin-top: 25px; 
-} */
-
-.cadastro-objeto, .cadastro-local {
-    margin-bottom: 20px;
+.btn-cadastrar:hover {
+    background-color: #333;
 }
 
-/* Ajusta o padding do formulário de local */
-.cadastro-local h3 {
-    margin-bottom: 10px; 
-    font-size: 14px;
-    font-weight: bold;
-}
+
 /* ============================================== */
-/* CARDS DE OBJETOS               */
+/* CARDS DE OBJETOS E DETALHES               */
 /* ============================================== */
 
 .grid-objetos {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 colunas por linha */
+    grid-template-columns: repeat(3, 1fr); 
     gap: 20px;
 }
 
@@ -280,7 +345,6 @@ hr {
 
 .placeholder-image, .imagem-objeto {
     width: 100%;
-    /* Mantém a proporção dos cards 1:1, como no protótipo */
     padding-top: 100%; 
     background-color: var(--cor-borda);
     margin-bottom: 10px;
@@ -292,7 +356,6 @@ hr {
 }
 
 .imagem-objeto {
-    /* Se a imagem real for carregada, a url é definida pelo Django e o background some */
     background: none; 
     padding: 0; 
     height: auto; 
@@ -305,102 +368,13 @@ hr {
     color: var(--cor-primaria);
 }
 
-/* Estilos de Detalhes do Item */
-.detalhes-item h1 {
-    font-size: 28px;
-    font-weight: normal;
-    margin-bottom: 30px;
-}
+/* --- Estilos para Edição (detalhes.html) --- */
 
-.layout-detalhes {
-    display: flex;
-    gap: 40px;
-}
-
-.painel-imagem-info {
-    width: 350px;
-    flex-shrink: 0;
-}
-
-.imagem-detalhes, .placeholder-imagem-detalhes {
-    width: 100%;
-    height: 350px;
-    background-color: var(--cor-borda);
-    margin-bottom: 10px;
-    /* Ajuste o placeholder conforme necessário */
-}
-
-.placeholder-imagem-detalhes {
-    /* Reutiliza o estilo do placeholder do card, mas com tamanho maior */
-    padding-top: 0; 
-    background-size: 80px;
-}
-
-.nome-objeto-detalhes {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.painel-acoes {
-    flex-grow: 1;
-}
-
-.info-status label {
-    display: block;
-    font-weight: bold;
-    font-size: 14px;
-    margin-top: 15px;
-    color: var(--cor-texto-claro);
-}
-
-.info-status input[type="text"] {
+.form-edicao input[type="text"],
+.form-edicao select {
     width: 300px;
     padding: 8px 10px;
     border: 1px solid var(--cor-borda);
-    border-radius: 4px;
-    margin-top: 5px;
-    background-color: var(--cor-secundaria);
-    font-size: 14px;
-}
-
-.status-atual-label {
-    margin-top: 20px;
-    font-size: 16px;
-}
-
-.acoes-gerenciais {
-    margin-top: 50px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap; 
-}
-
-.btn-marcar-achado {
-    background-color: #ff9800; 
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 4px;
-}
-
-.btn-excluir {
-    background-color: #cc0000; 
-    color: var(--cor-secundaria);
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 4px;
-}
-
-.form-edicao input[type="text"] {
-    width: 300px;
-    padding: 8px 10px;
-    border: 1px solid #ccc;
     border-radius: 4px;
     margin-top: 5px;
     margin-bottom: 15px; 
@@ -414,11 +388,6 @@ hr {
     font-size: 14px;
     margin-top: 15px;
     color: #555;
-}
-
-.data-readonly {
-    background-color: #f0f0f0 !important; 
-    color: #666;
 }
 
 .btn-salvar-edicao {
@@ -469,4 +438,54 @@ hr {
     font-size: 14px;
     font-weight: bold;
     border-radius: 4px;
+}
+
+.btn-marcar-achado {
+    background-color: #ff9800; 
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.btn-excluir {
+    background-color: #cc0000; 
+    color: var(--cor-secundaria);
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.layout-detalhes {
+    display: flex;
+    gap: 40px;
+}
+
+.painel-imagem-info {
+    width: 350px; 
+    flex-shrink: 0; 
+}
+
+.painel-imagem-info img {
+    max-width: 100%;
+    height: auto;
+}
+
+.imagem-detalhes {
+    max-width: 100%; 
+    height: auto;
+    display: block;
+}
+
+.placeholder-imagem-detalhes {
+    width: 100%;
+    height: 350px;
+    background-color: var(--cor-borda);
+    margin-bottom: 10px;
 }

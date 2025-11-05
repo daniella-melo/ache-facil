@@ -1,5 +1,5 @@
 from django import forms
-from .models import Objeto, Local
+from .models import Objeto, Local, Cor
 
 class LocalForm(forms.ModelForm):
     class Meta:
@@ -9,13 +9,18 @@ class LocalForm(forms.ModelForm):
             'nome': forms.TextInput(attrs={'placeholder': 'Novo local', 'class': 'input-padrao'}),
         }
 
-class CadastroObjetoForm(forms.ModelForm):
-    # Este é um formulário para a seção 'Achou mais um objeto? Cadastre Aqui'
-    
+class CorForm(forms.ModelForm):
+    class Meta:
+        model = Cor
+        fields = ['nome']
+        widgets = {
+            'nome': forms.TextInput(attrs={'placeholder': 'Nova cor', 'class': 'input-padrao'}),
+        }
+
+class CadastroObjetoForm(forms.ModelForm):    
     class Meta:
         model = Objeto
-        fields = ['nome', 'local_encontrado', 'imagem']
-        # Adicionar classes CSS para estilização (opcional, mas bom para o layout)
+        fields = ['nome', 'local_encontrado', 'cor', 'imagem']
         widgets = {
             'nome': forms.TextInput(attrs={'placeholder': 'nome', 'class': 'input-padrao'})
         }

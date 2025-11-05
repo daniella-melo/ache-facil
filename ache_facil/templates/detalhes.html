@@ -37,6 +37,9 @@
                                 
                                 <label for="{{ form_edicao.nome.id_for_label }}">Nome do Objeto</label>
                                 {{ form_edicao.nome }}
+
+                                <label for="{{ form_edicao.cor.id_for_label }}">Cor predominante</label>
+                                {{ form_edicao.cor }}
                                 
                                 <label for="{{ form_edicao.local_encontrado.id_for_label }}">Local encontrado</label>
                                 {{ form_edicao.local_encontrado }}
@@ -70,13 +73,12 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="marcar_perdido">
                                 <button type="submit" class="btn-voltar-perdidos">
-                                    VOLTAR OBJETO PARA STATUS DE PERDIDO
+                                    VOLTAR PARA STATUS DE PERDIDO
                                 </button>
                             </form>
                             
                             {% endif %}
                             
-
                             <form method="POST" action="{% url 'detalhes_objeto' pk=objeto.pk %}" class="form-acao form-excluir">
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="excluir">

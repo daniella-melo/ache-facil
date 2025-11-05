@@ -20,7 +20,7 @@
 
     <hr>
 
-    <div class="cadastro-objeto">
+    <div class="cadastro-objeto cartao-sidebar">
         <h3>Achou mais um objeto? Cadastre Aqui</h3>
         
         <form method="POST" enctype="multipart/form-data" action="{% url 'home' %}">
@@ -31,6 +31,10 @@
             
             <label for="{{ form_cadastro.local_encontrado.id_for_label }}">Local encontrado</label>
             {{ form_cadastro.local_encontrado }}
+
+            <label for="{{ form_cadastro.cor.id_for_label }}">Cor predominante</label>
+            {{ form_cadastro.cor }}
+
 
             <div class="upload-imagem-box">
                  <i class="fas fa-upload"></i> Upload Imagem
@@ -48,15 +52,27 @@
 
     <hr>
 
-    <div class="cadastro-local">
-    <h3>Cadastrar Novo Local</h3>
-    <form method="POST" action="{% url 'home' %}">
-        {% csrf_token %}
-        {{ form_local.nome }} 
-        <button type="submit" name="cadastrar_local" class="btn-cadastrar">
-            Cadastrar Local
-        </button>
-    </form>
-</div>
+    <div class="cadastro-local cartao-sidebar">
+        <h3>Cadastrar Novo Local</h3>
+        <form method="POST" action="{% url 'home' %}">
+            {% csrf_token %}
+            {{ form_local.nome }} 
+            <button type="submit" name="cadastrar_local" class="btn-cadastrar">
+                Cadastrar Local
+            </button>
+        </form>
+    </div>
 
+    <hr>
+
+    <div class="cadastro-cor cartao-sidebar">
+        <h3>Cadastrar Nova Cor</h3>
+        <form method="POST" action="{% url 'home' %}">
+            {% csrf_token %}
+            {{ form_cor.nome }} 
+            <button type="submit" name="cadastrar_cor" class="btn-cadastrar">
+                Cadastrar Cor
+            </button>
+        </form>
+    </div>
 </aside>

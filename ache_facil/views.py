@@ -1,8 +1,55 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q 
 from django.http import Http404
-from .models import Objeto, Local
-from .forms import CadastroObjetoForm, LocalForm
+from .models import Objeto, Local, Cor
+from .forms import CadastroObjetoForm, LocalForm, CorForm
+from fuzzywuzzy import fuzz
+
+def aplicar_busca_avancada(queryset, query_string):
+    """
+    Aplica busca por similaridade (Fuzzy Search) nos objetos.
+    O método usa o ORM para buscar candidatos e FuzzyWuzzy para ranquear e filtrar.
+    """
+    if not query_string:
+        return queryset
+
+    query_limpa = query_string.strip().lower()
+    
+    # --- 1. Busca Ampla (para criar o conjunto de candidatos) ---
+    candidato_query = Q()
+    for term in query_limpa.split():
+        candidato_query |= (
+            Q(nome__icontains=term) | 
+            Q(local_encontrado__nome__icontains=term) | 
+            Q(cor__nome__icontains=term)
+        )
+        
+    candidatos = queryset.filter(candidato_query)
+
+    if not candidatos.exists():
+        return queryset.none()
+    
+    # --- 2. Ranqueamento com FuzzyWuzzy ---
+    RANKEAMENTO_MINIMO = 65 #Pontuação mínima para considerar um match 
+    resultados_ranqueados = []
+    
+    for objeto in candidatos:
+        nome_local = objeto.local_encontrado.nome if objeto.local_encontrado else ""
+        nome_cor = objeto.cor.nome if objeto.cor else ""
+        
+        texto_objeto = f"{objeto.nome} {nome_local} {nome_cor}".lower()
+        
+        score = fuzz.token_set_ratio(query_limpa, texto_objeto)
+        
+        if score >= RANKEAMENTO_MINIMO:
+            resultados_ranqueados.append({'objeto': objeto, 'score': score})
+            
+    # --- 3. Filtragem Final e Ordenação ---
+    resultados_ranqueados.sort(key=lambda x: x['score'], reverse=True)
+    pk_list = [item['objeto'].pk for item in resultados_ranqueados]
+    
+    return Objeto.objects.filter(pk__in=pk_list) 
+
 
 def home(request):
     if request.method == 'POST':
@@ -18,35 +65,63 @@ def home(request):
                 form_local.save()
                 return redirect('home')
         
-        form_objeto = CadastroObjetoForm()
+        elif 'cadastrar_cor' in request.POST:
+            form_cor = CorForm(request.POST)
+            if form_cor.is_valid():
+                form_cor.save()
+                return redirect('home')
+        
+        form_objeto = CadastroObjetoForm(request.POST, request.FILES) if 'cadastrar_objeto' in request.POST else CadastroObjetoForm()
     else:
         form_objeto = CadastroObjetoForm()
-
+        
     form_local = LocalForm()
-
+    form_cor = CorForm()
+    
     objetos_encontrados = Objeto.objects.all().order_by('-data_cadastro')
     query_atual = request.GET.get('q')
     ordenacao_atual = request.GET.get('ordem', '-data_cadastro')
+
     status_filter = request.GET.get('status_filter') 
+    local_filter = request.GET.get('local_filter')
+    cor_filter = request.GET.get('cor_filter')
 
     if status_filter in ['ACHADO', 'PERDIDO']:
         objetos_encontrados = objetos_encontrados.filter(status=status_filter)
 
-    if query_atual:
-        objetos_encontrados = objetos_encontrados.filter(
-            Q(nome__icontains=query_atual) | 
-            Q(local_encontrado__icontains=query_atual)
-        )
+    if local_filter:
+        try:
+            objetos_encontrados = objetos_encontrados.filter(local_encontrado_id=local_filter)
+        except ValueError:
+            pass
 
-    objetos_encontrados = objetos_encontrados.order_by(ordenacao_atual)
+    if cor_filter:
+        try:
+            objetos_encontrados = objetos_encontrados.filter(cor_id=cor_filter)
+        except ValueError:
+            pass
+
+    if query_atual:
+        objetos_encontrados = aplicar_busca_avancada(objetos_encontrados, query_atual)
+    else:
+        objetos_encontrados = objetos_encontrados.order_by(ordenacao_atual)
+
+    locais_disponiveis = Local.objects.all().order_by('nome')
+    cores_disponiveis = Cor.objects.all().order_by('nome')
+
 
     context = {
         'form_cadastro': form_objeto,
         'form_local': form_local,
+        'form_cor': form_cor,
         'objetos_encontrados': objetos_encontrados,
         'query_atual': query_atual,
         'ordenacao_atual': ordenacao_atual,
         'status_atual': status_filter, 
+        'locais_disponiveis': locais_disponiveis,
+        'cores_disponiveis': cores_disponiveis,
+        'local_atual': local_filter,
+        'cor_atual': cor_filter,
     }
 
     return render(request, 'home.html', context)
@@ -78,10 +153,15 @@ def detalhes_objeto(request, pk):
                 form_edicao.save()
                 return redirect('detalhes_objeto', pk=objeto.pk)
             
+            form_cadastro = CadastroObjetoForm()
+            form_local = LocalForm()
+            form_cor = CorForm()
             contexto = {
                 'objeto': objeto,
                 'form_edicao': form_edicao, 
-                'form_cadastro': CadastroObjetoForm(),
+                'form_cadastro': form_cadastro, 
+                'form_local': form_local,
+                'form_cor': form_cor,
                 'status_atual': objeto.status, 
             }
             return render(request, 'detalhes.html', contexto)
@@ -89,12 +169,14 @@ def detalhes_objeto(request, pk):
     form_edicao = CadastroObjetoForm(instance=objeto)
     form_cadastro = CadastroObjetoForm()
     form_local = LocalForm()
+    form_cor = CorForm()
     
     contexto = {
         'objeto': objeto,
         'form_edicao': form_edicao,
         'form_cadastro': form_cadastro, 
         'form_local': form_local,
+        'form_cor': form_cor,
         'status_atual': objeto.status, 
     }
 
