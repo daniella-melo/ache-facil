@@ -96,11 +96,13 @@
                     {% for objeto in objetos_encontrados %}
                         <a href="{% url 'detalhes_objeto' pk=objeto.pk %}" class="card-objeto-link">
                             <div class="card-objeto">
-                                {% if objeto.imagem %}
-                                    <img src="{{ objeto.imagem.url }}" alt="Objeto: {{ objeto.nome }}" class="imagem-objeto" />
-                                {% else %}
-                                    <div class="placeholder-image"></div> 
-                                {% endif %}
+                                <div class="imagem-container">
+                                    {% if objeto.imagem %}
+                                        <img src="{{ objeto.imagem.url }}" alt="Objeto: {{ objeto.nome }}" class="imagem-objeto" />
+                                    {% else %}
+                                        <div class="placeholder-image"></div> 
+                                    {% endif %}
+                                </div>
                                 
                                 <p class="nome-objeto">{{ objeto.nome }}</p>
                             </div>

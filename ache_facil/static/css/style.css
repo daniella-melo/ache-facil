@@ -115,36 +115,41 @@ body {
     font-size: 16px;
     margin-bottom: 20px;
 }
+
 #sidebar-filtros {
     flex-shrink: 0;
-    display: flex; /* CRÍTICO: Mantém a linha horizontal */
+    display: flex;
     align-items: center;
     gap: 15px; 
     font-size: 14px;
 }
 
-/* Garante que cada filtro (Local e Cor) seja uma sub-estrutura horizontal */
+#sidebar-filtros h3 {
+    display: none; 
+    font-weight: bold;
+    font-size: 14px;
+}
+
 #sidebar-filtros form {
     display: flex;
     align-items: center;
     gap: 5px; 
 }
 
-/* Estilo para os labels */
 #sidebar-filtros label {
-    font-weight: normal; /* Mantém menos chamativo que os títulos principais */
+    font-weight: bold;
     color: var(--cor-texto-claro);
-    flex-shrink: 0;
+    flex-shrink: 0; 
 }
 
-/* Força o estilo do SELECT (dropdown) dentro do bloco de filtros */
 #sidebar-filtros select {
     padding: 7px 10px;
     border: 1px solid var(--cor-borda);
     border-radius: 4px;
     font-size: 14px;
+    min-width: 130px;
     
-    /* Reaplicação do estilo de dropdown customizado */
+    /* Estilos do dropdown customizado */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -153,9 +158,8 @@ body {
     background-repeat: no-repeat;
     background-position: right 0.5em center;
     background-size: 1.2em 1.2em;
-    padding-right: 2em;
+    padding-right: 2em; /* Espaço para a seta */
     cursor: pointer;
-    min-width: 130px; /* Garante que o dropdown não fique muito estreito */
 }
 
 /* ============================================== */
@@ -326,7 +330,7 @@ hr {
 
 
 /* ============================================== */
-/* CARDS DE OBJETOS E DETALHES               */
+/* CARDS DE OBJETOS E DETALHES - MODIFICADO  */
 /* ============================================== */
 
 .grid-objetos {
@@ -335,21 +339,66 @@ hr {
     gap: 20px;
 }
 
+.card-objeto-link {
+    text-decoration: none; /* Garante que o link não tenha sublinhado */
+    display: block; /* Garante que o link ocupe todo o espaço do card */
+}
+
 .card-objeto {
     border: 1px solid var(--cor-borda);
     padding: 15px;
     border-radius: 4px;
     text-align: center;
-    overflow: hidden;
+    /* Remover height: 100% e flex-direction: column e justify-content: space-between */
 }
 
-.placeholder-image, .imagem-objeto {
+/** * NOVO: Contêiner da Imagem para Forçar o Tamanho Quadrado (1:1)
+ * Usa a técnica do padding-top para Aspect Ratio 
+ */
+.imagem-container {
+    width: 100%; 
+    padding-top: 100%; /* Força a altura a ser igual à largura (1:1) */
+    position: relative; /* Necessário para posicionar a imagem/placeholder dentro */
+    overflow: hidden; 
+    background-color: var(--cor-botao-claro);
+    margin-bottom: 10px;
+}
+
+/* NOVO: Estilização da Imagem dentro do Contêiner */
+.imagem-objeto {
+    position: absolute; /* Posiciona a imagem absolutamente dentro do contêiner */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* object-fit: cover garante que a imagem preencha o quadrado, cortando as bordas se necessário */
+    object-fit: cover; 
+    display: block; 
+}
+
+/* NOVO: Estilização do Placeholder de Imagem */
+.placeholder-image {
+    width: 100%;
+    height: 100%; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Estilos para o ícone de placeholder */
+    background-color: var(--cor-borda);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23999"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 14h16V6H4v12zm10.5-8.5l2.5 3.5 3-4 4 6H4l6-8 3.5 4.5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40px;
+}
+
+/* Removendo estilos antigos desnecessários que foram substituídos pelas classes .imagem-container e .imagem-objeto */
+/* .placeholder-image, .imagem-objeto {
     width: 100%;
     padding-top: 100%; 
     background-color: var(--cor-borda);
     margin-bottom: 10px;
     position: relative;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23999"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 14h16V6H4v12zm10.5-8.5l2.5 3.5 3-4 4 6H4l6-8 3.5 4.5z"/></svg>');
+    background-image: url(...);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 40px;
@@ -360,7 +409,8 @@ hr {
     padding: 0; 
     height: auto; 
     display: block; 
-}
+} */
+
 
 .nome-objeto, .text-info {
     font-size: 14px;
