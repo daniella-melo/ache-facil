@@ -133,3 +133,9 @@ MEDIA_URL = '/media/'
 
 # Diretório no sistema de arquivos onde os arquivos de mídia serão armazenados.
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+ALLOWED_HOSTS = [
+    'danimelo.pythonanywhere.com', 
+    '127.0.0.1',
+    'localhost',
+]
