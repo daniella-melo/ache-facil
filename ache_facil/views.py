@@ -6,31 +6,21 @@ from .forms import CadastroObjetoForm, LocalForm, CorForm
 from fuzzywuzzy import fuzz
 
 def aplicar_busca_avancada(queryset, query_string):
-    """
-    Aplica busca por similaridade (Fuzzy Search) nos objetos.
-    O método usa o ORM para buscar candidatos e FuzzyWuzzy para ranquear e filtrar.
-    """
     if not query_string:
         return queryset
 
     query_limpa = query_string.strip().lower()
     
-    # --- 1. Busca Ampla (para criar o conjunto de candidatos) ---
-    candidato_query = Q()
-    for term in query_limpa.split():
-        candidato_query |= (
-            Q(nome__icontains=term) | 
-            Q(local_encontrado__nome__icontains=term) | 
-            Q(cor__nome__icontains=term)
-        )
-        
-    candidatos = queryset.filter(candidato_query)
-
+    # --- 1. Busca Ampla: Ranquear sobre o queryset inteiro ---
+    candidatos = queryset
+    
     if not candidatos.exists():
         return queryset.none()
     
     # --- 2. Ranqueamento com FuzzyWuzzy ---
-    RANKEAMENTO_MINIMO = 65 #Pontuação mínima para considerar um match 
+
+    #score baixo para máxima tolerância.
+    RANKEAMENTO_MINIMO = 50 
     resultados_ranqueados = []
     
     for objeto in candidatos:
@@ -38,18 +28,26 @@ def aplicar_busca_avancada(queryset, query_string):
         nome_cor = objeto.cor.nome if objeto.cor else ""
         
         texto_objeto = f"{objeto.nome} {nome_local} {nome_cor}".lower()
-        
-        score = fuzz.token_set_ratio(query_limpa, texto_objeto)
+        score = fuzz.partial_ratio(query_limpa, texto_objeto) 
         
         if score >= RANKEAMENTO_MINIMO:
             resultados_ranqueados.append({'objeto': objeto, 'score': score})
             
-    # --- 3. Filtragem Final e Ordenação ---
-    resultados_ranqueados.sort(key=lambda x: x['score'], reverse=True)
-    pk_list = [item['objeto'].pk for item in resultados_ranqueados]
+    # --- 3. Filtragem Final e Ordenação (Preservando a Ordem do Score) ---
     
-    return Objeto.objects.filter(pk__in=pk_list) 
+    resultados_ranqueados.sort(key=lambda x: x['score'], reverse=True)
+    pk_list_ordenada = [item['objeto'].pk for item in resultados_ranqueados]
+    
+    if not pk_list_ordenada:
+        return queryset.none()
 
+    from django.db.models import Case, When, Value, IntegerField 
+
+    preservacao_ordem = Case(*[
+        When(pk=pk, then=Value(i)) for i, pk in enumerate(pk_list_ordenada)
+    ], output_field=IntegerField())
+
+    return queryset.filter(pk__in=pk_list_ordenada).order_by(preservacao_ordem)
 
 def home(request):
     if request.method == 'POST':
