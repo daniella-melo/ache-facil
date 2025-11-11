@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q 
+from django.db.models import Q, Case, When, Value, IntegerField 
 from django.http import Http404
 from .models import Objeto, Local, Cor
 from .forms import CadastroObjetoForm, LocalForm, CorForm
-from fuzzywuzzy import fuzz
+from fuzzywuzzy import fuzz 
 
 def aplicar_busca_avancada(queryset, query_string):
     if not query_string:
@@ -26,8 +26,8 @@ def aplicar_busca_avancada(queryset, query_string):
     for objeto in candidatos:
         nome_local = objeto.local_encontrado.nome if objeto.local_encontrado else ""
         nome_cor = objeto.cor.nome if objeto.cor else ""
-        
         texto_objeto = f"{objeto.nome} {nome_local} {nome_cor}".lower()
+        
         score = fuzz.partial_ratio(query_limpa, texto_objeto) 
         
         if score >= RANKEAMENTO_MINIMO:
@@ -41,8 +41,7 @@ def aplicar_busca_avancada(queryset, query_string):
     if not pk_list_ordenada:
         return queryset.none()
 
-    from django.db.models import Case, When, Value, IntegerField 
-
+    # Preservação da ordem ranqueada
     preservacao_ordem = Case(*[
         When(pk=pk, then=Value(i)) for i, pk in enumerate(pk_list_ordenada)
     ], output_field=IntegerField())
